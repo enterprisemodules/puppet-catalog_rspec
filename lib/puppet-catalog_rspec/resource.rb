@@ -30,7 +30,12 @@ class Puppet::Resource
       when :subscribe
         [v].flatten.each { |r| puts "  .that_subscribes_to('#{v}')" }
       else
-        puts "  .with(#{("'#{k}'").ljust(max_length + 2)} => '#{v}')"
+        val = if v.is_a?(String) && (v.match?(%r{'}) || v.dump[1..-2] != v)
+                v.dump
+              else
+                "'#{v}'"
+              end
+        puts "  .with(#{("'#{k}'").ljust(max_length + 2)} => #{val})"
       end
     end
   end
