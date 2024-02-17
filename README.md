@@ -48,25 +48,31 @@ it { dump_catalog }
 This will dump the full current catalog as rspec-code. Here is an example:
 
 ```
-it { is_expected.to contain_archive('/install/p17572726_1036_Generic.zip')
-  .with('path'    => '/install/p17572726_1036_Generic.zip')
-  .with('ensure'  => 'present')
-  .with('cleanup' => 'false')
-  .with('extract' => 'false')
-  .with('source'  => 'puppet:///middleware/p17572726_1036_Generic.zip')
-  .with('user'    => 'oracle')
-  .with('group'   => 'dba')
-  .that_requires('File[/opt/oracle/middleware/utils/bsu/cache_dir]')
+it {
+  is_expected.to contain_archive('/install/p17572726_1036_Generic.zip')
+    .that_requires('File[/opt/oracle/middleware/utils/bsu/cache_dir]')
+    .with(
+      path:    '/install/p17572726_1036_Generic.zip',
+      ensure:  'present',
+      cleanup: 'false',
+      extract: 'false',
+      source:  'puppet:///middleware/p17572726_1036_Generic.zip',
+      user:    'oracle',
+      group:   'dba',
+    )
 }
 
-it { is_expected.to contain_exec('patch policy for p17572726_1036_Generic.zip')
-  .with('command'   => 'bash -c "{ echo 'grant codeBase \"file:/opt/oracle/middleware/patch_wls1036/patch_jars/-\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> /opt/oracle/middleware/wlserver/server/lib/weblogic.policy"')
-  .with('unless'    => 'grep 'file:/opt/oracle/middleware/patch_wls1036/patch_jars/-' /opt/oracle/middleware/wlserver/server/lib/weblogic.policy')
-  .with('path'      => '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/java/jdk1.7.0_45/bin')
-  .with('user'      => 'oracle')
-  .with('group'     => 'dba')
-  .with('logoutput' => 'on_failure')
-  .that_requires('Bsu_patch[FCX7]')
+it {
+  is_expected.to contain_exec('patch policy for p17572726_1036_Generic.zip')
+    .that_requires('Bsu_patch[FCX7]')
+    .with(
+      command:   "bash -c \"{ echo 'grant codeBase \\\"file:/opt/oracle/middleware/patch_wls1036/patch_jars/-\\\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> /opt/oracle/middleware/wlserver/server/lib/weblogic.policy\"",
+      unless:    "grep 'file:/opt/oracle/middleware/patch_wls1036/patch_jars/-' /opt/oracle/middleware/wlserver/server/lib/weblogic.policy",
+      path:      '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/java/jdk1.7.0_45/bin',
+      user:      'oracle',
+      group:     'dba',
+      logoutput' 'on_failure',
+    )
 }
 ```
 
