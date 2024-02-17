@@ -45,7 +45,7 @@ There is no one single workflow that works, but this is what we use. In your spe
 it { dump_catalog }
 ```
 
-This will dump the full current catalog as rspec-code. Here is an example:
+This will dump the full current catalog as rspec-code to standard output. Here is an example:
 
 ```
 it {
@@ -75,6 +75,13 @@ it {
     )
 }
 ```
+
+Alternatively, instead of dumping to standard output, use the following to save the generated rspec:
+
+```
+it { rspec_catalog('generated_rspec_catalog.rb') }
+```
+
 
 Now copy and paste the parts that you want to check in your manifest into your rspec-code and voila.
 ## Development
